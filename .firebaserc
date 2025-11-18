@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "prod": "loss-prevention-center",
+    "default": "loss-prevention-center"
+  },
+  "targets": {},
+  "etags": {}
+}

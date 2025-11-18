@@ -1,0 +1,21 @@
+{
+  "name": "suchwit-firebase-mvp",
+  "private": true,
+  "engines": {
+    "node": "20"
+  },
+  "main": "lib/index.js", 
+  "scripts": {
+    "build": "tsc -p .",
+    "serve": "firebase emulators:start --only hosting,functions,firestore",
+    "deploy": "firebase deploy --only hosting,functions,firestore:rules"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "firebase-admin": "^12.5.0",
+    "firebase-functions": "^5.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.4"
+  }
+}
