@@ -10,48 +10,35 @@ export type PublicPageProps = {
 };
 
 export function renderPublicView(props: PublicPageProps): string {
-  const smsButton = props.hasPhone
-    ? `
-      <a class="public-button" href="${props.smsHref}">
-        <span class="public-button-icon" aria-hidden="true">
-          <!-- 메시지 아이콘 -->
-          <svg viewBox="0 0 24 24" class="icon-svg">
-            <rect x="3" y="5" width="18" height="14" rx="3" ry="3"></rect>
-            <polyline points="4,7 12,12 20,7"></polyline>
-          </svg>
-        </span>
-        <span class="public-button-label">물건 주인에게 문자보내기</span>
-      </a>`
+  const hasAnyContact = props.hasPhone || props.hasSnsLink;
+
+  // 1) 전화번호 표시용 (+82 10 1234 5678)
+  const phoneDisplay =
+    props.hasPhone ? formatDisplayPhoneFromHref(props.telHref) : "";
+
+  const phoneNumberHtml = phoneDisplay
+    ? `<p class="public-phone-number">${phoneDisplay}</p>`
     : "";
 
+  // 2) PNG 아이콘 버튼: 전화하기 / 문자 보내기
+  //   - 아이콘 파일은 Firebase Hosting 기준:
+  //     hosting/img/icon-call.png  →  /img/icon-call.png
+  //     hosting/img/icon-sms.png   →  /img/icon-sms.png
   const callButton = props.hasPhone
     ? `
-      <a class="public-button" href="${props.telHref}">
-        <span class="public-button-icon" aria-hidden="true">
-          <!-- 전화 아이콘 -->
-          <svg viewBox="0 0 24 24" class="icon-svg">
-            <path d="M7 4c.4-1 1.3-1.4 2.1-1.1l2.1.8c.7.3 1.1 1 1 1.8L12 8c0 .4-.2.7-.5.9l-1.4 1.1a10.7 10.7 0 0 0 4 4l1.1-1.4c.2-.3.6-.5.9-.5l2.4.2c.8.1 1.5.6 1.8 1.3l.8 2.1c.3.8-.1 1.7-1.1 2.1-1.6.7-3.5.9-5.8.3-2.1-.5-4.1-1.6-6-3.4-1.9-1.8-3.1-3.7-3.7-5.7C4 7.5 4.2 5.6 5 4Z"></path>
-          </svg>
-        </span>
-        <span class="public-button-label">물건 주인에게 연락하기</span>
+      <a class="public-phone-button" href="${props.telHref}">
+        <img class="public-phone-icon" src="/img/icon-call.png" alt="call icon" />
+        <span class="public-phone-label">전화하기</span>
       </a>`
     : "";
 
-  const linkButton = props.hasSnsLink
+  const smsButton = props.hasPhone
     ? `
-      <a class="public-button" href="${props.snsHref}" target="_blank" rel="noopener noreferrer">
-        <span class="public-button-icon" aria-hidden="true">
-          <!-- 링크 아이콘 -->
-          <svg viewBox="0 0 24 24" class="icon-svg">
-            <path d="M10.5 7.5 9.1 9a3.5 3.5 0 0 0 5 5l1.4-1.4"></path>
-            <path d="M13.5 16.5 15 15a3.5 3.5 0 0 0-5-5L8.6 11.4"></path>
-          </svg>
-        </span>
-        <span class="public-button-label">링크로 연락하기</span>
+      <a class="public-phone-button" href="${props.smsHref}">
+        <img class="public-sms-icon" src="/img/icon-sms.png" alt="sms icon" />
+        <span class="public-phone-label">문자 보내기</span>
       </a>`
     : "";
-
-  const hasAnyContact = props.hasPhone || props.hasSnsLink;
 
   const noContactNotice = hasAnyContact
     ? ""
@@ -61,13 +48,55 @@ export function renderPublicView(props: PublicPageProps): string {
         불편을 끼쳐 드려 죄송합니다.
       </p>`;
 
-  const messageHtml = escapeHtml(props.message)
+  // 3) 링크로 연락하기 영역 (URL 전체 표시 + 클릭 시 이동)
+  const linkSection = props.hasSnsLink
+    ? `
+    <a class="public-link-section"
+       href="${props.snsHref}"
+       target="_blank"
+       rel="noopener noreferrer">
+      <div class="public-link-card">
+        <div class="public-link-header">
+          <h2 class="public-link-title">링크로 연락하기</h2>
+          <span class="public-link-arrow" aria-hidden="true">➜</span>
+        </div>
+        <div class="public-link-body">
+          ${escapeHtml(props.snsHref)}
+        </div>
+      </div>
+    </a>`
+  : "";
+
+  // 4) 주인이 남기는 말 영역에 들어갈 메시지
+  
+  const messageText = props.message || "";
+  const messageHtml = escapeHtml(messageText)
     .split("\n")
     .map((line) => `<p>${line}</p>`)
     .join("");
+  const messageSection = `
+    <section class="public-message-section">
+      <div class="public-link-card">
+        <div class="public-message-header">
+          <h2 class="public-link-title">주인이 남기는 말</h2>
+        </div>
+        <div class="public-message-body">
+          ${messageHtml}
+        </div>
+      </div>
+    </section>`;
+
 
   return `
-    <h1 class="public-title">주인과 연결할까요?</h1>
+   <div class="public-logo">
+      <img
+        src="/img/nat-cactus.png"
+        alt="분실방지본부 선인장 아이콘"
+        class="public-logo-img"
+      />
+    </div>
+
+    <h1 class="public-title">분실방지본부</h1>
 
     <p class="public-subtitle">
       이 QR은 <strong>‘분실방지본부’</strong>와 연결되어 있습니다.<br />
@@ -75,24 +104,29 @@ export function renderPublicView(props: PublicPageProps): string {
       주인에게 돌아갈 수 있습니다.
     </p>
 
+    ${phoneNumberHtml}
+
     <section class="public-actions">
-      ${smsButton}
-      ${callButton}
-      ${linkButton}
+      ${
+        props.hasPhone
+          ? `
+        <div class="public-phone-buttons">
+          ${callButton}
+          ${smsButton}
+        </div>`
+          : ""
+      }
       ${noContactNotice}
     </section>
 
-    <section class="public-message-section">
-      <h2 class="public-message-title">습득자에게 전하는 메시지</h2>
-      <div class="public-message-card">
-        ${messageHtml}
-      </div>
-    </section>
+    ${linkSection}
+
+    ${messageSection}
 
     <section class="public-service-section">
       <div class="public-service-card">
         <p>
-          분실방지본부(NAT)는 QR코드를 통해 잃어버린 물건과 주인을 빠르게 이어주는
+          분실방지본부(NAT)는 <br />QR코드를 통해 잃어버린 물건과 주인을 빠르게 이어주는
           디지털 네임태그 서비스입니다.<br />
           분실로 인한 낭비를 줄이고, 다시 돌아오는 경험을 일상으로 만듭니다.
         </p>
@@ -108,4 +142,36 @@ function escapeHtml(text: string): string {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
+}
+
+// telHref에서 숫자만 뽑아 +82 10 1234 5678 형태로 변환
+function formatDisplayPhoneFromHref(telHref: string): string {
+  const digits = (telHref || "").replace(/\D/g, "");
+  if (!digits) return "";
+
+  let country = "82";
+  let local = digits;
+
+  // tel:+821012345678 / tel:8210... 형태
+  if (digits.startsWith("82")) {
+    local = digits.slice(2);
+    if (local.startsWith("0")) {
+      local = local.slice(1);
+    }
+  } else if (digits.startsWith("0")) {
+    // tel:01012345678 형식
+    local = digits.slice(1);
+  }
+
+  // 한국 휴대폰(9~10자리) 기준: 10-1234-5678, 10-123-4567 등
+  if (local.length >= 9 && local.length <= 10) {
+    const firstTwo = local.slice(0, 2);
+    const middle = local.slice(2, local.length - 4);
+    const last4 = local.slice(-4);
+    //return `+${country} ${firstTwo} ${middle} ${last4}`;
+    return `+${country} ${firstTwo}-${middle}-${last4}`;
+  }
+
+  // 그 외 길이는 그냥 붙임
+  return `+${country} ${local}`;
 }
