@@ -1,21 +1,26 @@
 // functions/src/index.ts
-import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+
+
 import express, { Request, Response } from 'express';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { randomUUID } from 'crypto';
+import { onRequest } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
+
 import { UUID_RE, SHORT_RE, randomShort } from './short';
-
-
 import { renderRegisterInner } from './views/registerPage';
 import { page, buildErrorMailto, renderErrorWithMail } from './views/layout';
 //import { renderPublicView, PublicPageProps } from "./views/publicPage";
 import { createRenderPublic } from "./views/publicLegacy";
 
-
-
+// ✅ admin/app 초기화가 파일 어딘가에 이미 있다면 중복 호출만 피하세요.
 admin.initializeApp();
+
+const renderPublic = createRenderPublic(page);
+
+
+
 const db = getFirestore();
 const app = express();
 
@@ -43,59 +48,6 @@ function normalizePhone(raw: string): { display: string; tel: string } {
   else if (only.length === 10) display = `${only.slice(0, 3)}-${only.slice(3, 6)}-${only.slice(6)}`;
   return { display, tel };
 }
-
-// function buildErrorMailto(title: string, e: any, req?: Request): string {
-//   const to = 'suchwit.wit@gmail.com'; // 실제 사용할 분실방지본부 개발자 메일로 교체
-//   const subject = `[NAT 오류 신고] ${title}`;
-//   const parts: string[] = [];
-
-//   parts.push(`페이지: ${req?.originalUrl || ''}`);
-//   parts.push(`메서드: ${req?.method || ''}`);
-//   parts.push('');
-//   parts.push('오류 메시지:');
-//   parts.push(String(e && e.message ? e.message : e));
-//   parts.push('');
-//   parts.push('추가 설명을 여기에 적어 주세요:');
-
-//   const body = encodeURIComponent(parts.join('\n'));
-//   const subj = encodeURIComponent(subject);
-//   return `mailto:${to}?subject=${subj}&body=${body}`;
-// }
-
-// function renderErrorWithMail(
-//   title: string,
-//   description: string,
-//   mailtoHref: string
-// ): string {
-//   return `
-//     <h1>${title}</h1>
-//     <p>${description}</p>
-//     <p style="margin-top:16px;">
-//       <a href="${mailtoHref}" class="btn-secondary">
-//         분실방지본부에 오류 메일 보내기
-//       </a>
-//     </p>
-//   `;
-// }
-
-// function page(html: string, title = '분실방지본부 NAT 태그'): string {
-//   return `<!DOCTYPE html>
-// <html lang="ko">
-// <head>
-//   <meta charset="utf-8" />
-//   <title>${title}</title>
-//   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  
-// </head>
-// <body>
-//   <main class="wrap">
-//     ${html}    
-//   </main>
-// </body>
-// </html>`;
-// }
-const renderPublic = createRenderPublic(page);
-
 
 
 function renderRegister(idForHidden: string) {
@@ -165,7 +117,13 @@ app.get('/q/:id', async (req: Request, res: Response) => {
       return res.status(200).send(renderRegister(short));
     }
     if (item.status === 'activated') {
-      return res.status(200).send(renderPublic(item.public_profile || {}));
+      console.log('PUBLIC VIEW HIT v2026-01-07', {
+      id: uuid,
+      url: req.originalUrl,
+    });
+
+    return res.status(200).send(renderPublic(item.public_profile || {}));
+      
     }
     return res
       .status(410)
@@ -265,6 +223,7 @@ app.post('/api/register', async (req: Request, res: Response) => {
 
 // ====== Admin-only: batch issuing ======
 // Secret: ADMIN_TOKEN (set via `firebase functions:secrets:set ADMIN_TOKEN`)
+// ✅ Secret 정의 (v2에서 runWith 대신 이 방식으로 주입/사용)
 const ADMIN_TOKEN = defineSecret('ADMIN_TOKEN');
 
 function checkAdmin(req: Request): boolean {
@@ -326,8 +285,21 @@ app.post('/admin/issue-batch', async (req: Request, res: Response) => {
   }
 });
 
-// ====== Export (region 변경 원하면 'asia-northeast3') ======
-export const web = functions
-  .runWith({ secrets: [ADMIN_TOKEN] }) // ⬅️ Secret 주입
-  .region('us-central1')
-  .https.onRequest(app);
+// 예시: 어떤 라우트에서 secret 사용
+app.get('/debug', (req: Request, res: Response) => {
+  const token = ADMIN_TOKEN.value(); // ✅ 런타임에서 읽기
+  res.status(200).send({ ok: true, tokenExists: !!token });
+});
+
+
+// ✅ v2 export: runWith/region 체이닝 제거
+export const webV2 = onRequest(
+  {
+    region: 'us-central1',
+    secrets: [ADMIN_TOKEN],
+    // 필요하면 여기서 memory, timeoutSeconds, concurrency 등도 설정
+    // timeoutSeconds: 60,
+    // memory: '256MiB',
+  },
+  app
+);

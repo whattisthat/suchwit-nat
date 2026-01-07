@@ -108,12 +108,25 @@ export function page(html: string, title = '분실방지본부 NAT 태그',
       position: relative;
     }
 
-    /* 페이지별 배경 - body 클래스로 분기 */
+    /* Register 페이지용 전체 배경 – 뷰포트 고정 */
     body.page-register {
-      background: linear-gradient(180deg,
+      position: relative;
+      background: none; /* 기존 background 제거 */
+    }
+
+    /* 뷰포트 전체를 덮는 고정 그라데이션 레이어 */
+    body.page-register::before {
+      content: "";
+      position: fixed;
+      inset: 0;                 /* top:0; right:0; bottom:0; left:0; 와 동일 */
+      z-index: -1;
+      background: linear-gradient(
+        180deg,
         #F8F9FE 0%,
         #FFFEF8 50%,
-        #FFF7F5 100%);
+        #FFF7F5 100%
+      );
+      pointer-events: none;     /* 클릭 막지 않도록 */
     }
 
     body.page-public {
@@ -356,7 +369,7 @@ export function page(html: string, title = '분실방지본부 NAT 태그',
       font-size: 14px;
       font-weight: 600;
       letter-spacing: 0.02em;
-      background: linear-gradient(135deg, #1820EF 0%, #FF4E42 100%);
+      background: linear-gradient(135deg, #1820EF 20%, #FF4E42 80%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -365,6 +378,8 @@ export function page(html: string, title = '분실방지본부 NAT 태그',
       text-decoration: none;
       cursor: pointer;
       target="_blank" /* (같은 탭 이동). */
+      display: flex;
+      justify-content: center;
     }
     
     @media (min-width: 768px) {

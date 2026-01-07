@@ -16,10 +16,13 @@ export function renderPublicView(props: PublicPageProps): string {
   const phoneDisplay =
     props.hasPhone ? formatDisplayPhoneFromHref(props.telHref) : "";
 
-    // 전화하기, 문자보내기 버튼
   const phoneNumberHtml = phoneDisplay
-    ? `<p class="public-phone-number">${phoneDisplay}</p>`
-    : "";
+    ? `
+      <a class="public-phone-number" href="${props.telHref}">
+        ${phoneDisplay}
+      </a>
+    `
+  : "";
     
   // 2) PNG 아이콘 버튼: 전화하기 / 문자 보내기
   //   - 아이콘 파일은 Firebase Hosting 기준:
@@ -135,7 +138,9 @@ export function renderPublicView(props: PublicPageProps): string {
       </div>
     </section>
 
-    <p class="register-footer-brand">분실방지본부 NAT</p>
+    <a class="brand-footer" href="https://suchwit.bullet.site/" target="_blank" rel="noopener noreferrer">
+    분실방지본부 NAT
+    </a>
   `;
 }
 

@@ -1,7 +1,7 @@
 
 # suchwit.com — NAT QR MVP (Firebase Hosting + Functions)
 
-**테스트 도메인**: www.suchwit.com (또는 Firebase가 제공하는 서브도메인)
+**테스트 도메인**: www.suchwit.com 
 **경로**: https://www.suchwit.com/q/{uuid}
 
 ## Firestore 컬렉션

@@ -12,15 +12,15 @@
     "rewrites": [
       {
         "source": "/q/**",
-        "function": "web"
+        "function": "webV2"
       },
       {
         "source": "/api/**",
-        "function": "web"
+        "function": "webV2"
       },
       { 
         "source": "/admin/**", 
-        "function": "web" 
+        "function": "webV2" 
       },
       {
         "source": "**",

@@ -4,7 +4,7 @@
   "engines": {
     "node": "20"
   },
-  "main": "lib/index.js", 
+  "main": "lib/index.js",
   "scripts": {
     "build": "tsc -p .",
     "serve": "firebase emulators:start --only hosting,functions,firestore",
@@ -13,7 +13,7 @@
   "dependencies": {
     "express": "^4.19.2",
     "firebase-admin": "^12.5.0",
-    "firebase-functions": "^5.0.1"
+    "firebase-functions": "^7.0.2"
   },
   "devDependencies": {
     "typescript": "^5.5.4"

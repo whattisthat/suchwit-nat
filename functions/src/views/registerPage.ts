@@ -9,7 +9,7 @@ export function renderRegisterInner(idForHidden: string): string {
   <div class="register-page">
     <div class="container">
       <div class="help-section">
-        <a href="https://suchwit.bullet.site/qr/" class="help-link" target="_blank" rel="noopener noreferrer">
+        <a href="https://suchwit.bullet.site/qr/" class="help-link" rel="noopener noreferrer">
           <svg class="help-icon" viewBox="0 0 16 16" fill="none">
             <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="2"/>
             <path d="M8 11.5v-1M8 5v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -59,7 +59,7 @@ export function renderRegisterInner(idForHidden: string): string {
               id="message"
               name="message"
               maxlength="120"
-              placeholder="소중한 물건입니다. 연락 주시면 감사하겠습니다!"
+              placeholder="소중한 물건입니다. 연락 주시면 감사하겠습니다"
               class="field-input"
             ></textarea>
             <span class="char-count" id="char-count">0/120</span>
