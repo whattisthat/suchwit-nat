@@ -52,6 +52,12 @@ export function createRenderPublic(page: PageRenderer) {
       message,
     };
 
+    const innerHtml = renderPublicView(props);
+
+    // ★ 여기 “버전 표기”를 강제로 넣어본다
+    const versionBanner = `<p style="color:#FF4E42;font-weight:bold;">[PUBLIC VIEW v2026-01-07]</p>`;
+
+
     // 5) 공통 레이아웃(page)에 새 뷰를 집어넣기
     return page(
       renderPublicView(props),

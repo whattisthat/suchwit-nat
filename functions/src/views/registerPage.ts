@@ -6,80 +6,84 @@
  */
 export function renderRegisterInner(idForHidden: string): string {
   return `
-  <div class="container">
-    <div class="help-section">
-      <a href="https://suchwit.bullet.site/qr/" class="help-link" target="_blank" rel="noopener noreferrer">
-        <svg class="help-icon" viewBox="0 0 16 16" fill="none">
-          <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="2"/>
-          <path d="M8 11.5v-1M8 5v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        등록 방법
-      </a>
-    </div>
-
-    <header class="header">
-      <h1>연결을 시작합니다</h1>
-      <p class="subtitle">
-        <span class="highlight">습득자와 즉시 연결될</span><br />
-        연락 수단을 입력해 주세요
-      </p>
-    </header>
-
-    <form id="nat-register-form" class="form-section" action="/api/register" method="POST">
-      <input type="hidden" name="uuidOrShort" value="${idForHidden}" />
-
-      <div class="field-group">
-        <label for="contact" class="field-label">전화번호(선택)</label>
-        <input
-          id="contact"
-          name="contact"
-          type="tel"
-          inputmode="tel"
-          placeholder="010-1234-5678"
-          class="field-input"
-        />
+  <div class="register-page">
+    <div class="container">
+      <div class="help-section">
+        <a href="https://suchwit.bullet.site/qr/" class="help-link" target="_blank" rel="noopener noreferrer">
+          <svg class="help-icon" viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="2"/>
+            <path d="M8 11.5v-1M8 5v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          등록 방법
+        </a>
       </div>
 
-      <div class="field-group">
-        <label for="sns" class="field-label">SNS 또는 링크(선택)</label>
-        <input
-          id="sns"
-          name="sns"
-          type="text"
-          placeholder="카카오톡 오픈채팅, 인스타그램"
-          class="field-input"
-        />
-      </div>
-
-      <div class="field-group">
-        <label for="message" class="field-label">습득자에게 전할 메시지(선택)</label>
-        <div class="message-wrapper">
-          <textarea
-            id="message"
-            name="message"
-            maxlength="120"
-            placeholder="소중한 물건입니다. 연락 주시면 감사하겠습니다."
-            class="field-input"
-          ></textarea>
-          <span class="char-count" id="char-count">0/120</span>
-        </div>
-        <p class="field-hint">미입력 시 기본 문구로 저장됩니다</p>
-      </div>
-
-      <div class="actions">
-        <button type="submit" id="submit-btn" class="btn-primary" disabled>
-          등록 완료
-        </button>
-      </div>
-
-      <div class="footer-info">
-        <p class="privacy-note">
-          입력하신 정보는 <strong>태그를 스캔한 사람에게만</strong> 공개됩니다<br />
-          분실방지본부는 연락을 중개하며, 이후 거래에 관여하지 않습니다
+      <header class="header">
+        <h1>연결을 시작합니다</h1>
+        <p class="subtitle">
+          <span class="highlight">습득자와 즉시 연결될</span><br />
+          연락 수단을 입력해 주세요
         </p>
-        <div class="brand-footer">분실방지본부 NAT</div>
-      </div>
-    </form>
+      </header>
+
+      <form id="nat-register-form" class="form-section" action="/api/register" method="POST">
+        <input type="hidden" name="uuidOrShort" value="${idForHidden}" />
+
+        <div class="field-group">
+          <label for="contact" class="field-label">전화번호</label>
+          <input
+            id="contact"
+            name="contact"
+            type="tel"
+            inputmode="tel"
+            placeholder="010-1234-5678"
+            class="field-input"
+          />
+        </div>
+
+        <div class="field-group">
+          <label for="sns" class="field-label">SNS 또는 링크(선택)</label>
+          <input
+            id="sns"
+            name="sns"
+            type="text"
+            placeholder="카카오톡 오픈채팅, 인스타그램"
+            class="field-input"
+          />
+        </div>
+
+        <div class="field-group">
+          <label for="message" class="field-label">습득자에게 전할 메시지(선택)</label>
+          <div class="message-wrapper">
+            <textarea
+              id="message"
+              name="message"
+              maxlength="120"
+              placeholder="소중한 물건입니다. 연락 주시면 감사하겠습니다!"
+              class="field-input"
+            ></textarea>
+            <span class="char-count" id="char-count">0/120</span>
+          </div>
+          <p class="field-hint">미입력 시 기본 문구가 저장됩니다</p>
+        </div>
+
+        <div class="actions">
+          <button type="submit" id="submit-btn" class="btn-primary" disabled>
+            등록 완료
+          </button>
+        </div>
+
+        <div class="footer-info">
+          <p class="privacy-note">
+            입력하신 정보는 <strong>태그를 스캔한 사람에게만</strong> 공개됩니다<br />
+            분실방지본부는 연락을 중개하며, 이후 거래에 관여하지 않습니다
+          </p>
+          <a class="brand-footer" href="https://suchwit.bullet.site/" target="_blank" rel="noopener noreferrer">
+          분실방지본부 NAT
+          </a>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script>

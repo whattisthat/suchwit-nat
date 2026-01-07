@@ -16,10 +16,11 @@ export function renderPublicView(props: PublicPageProps): string {
   const phoneDisplay =
     props.hasPhone ? formatDisplayPhoneFromHref(props.telHref) : "";
 
+    // 전화하기, 문자보내기 버튼
   const phoneNumberHtml = phoneDisplay
     ? `<p class="public-phone-number">${phoneDisplay}</p>`
     : "";
-
+    
   // 2) PNG 아이콘 버튼: 전화하기 / 문자 보내기
   //   - 아이콘 파일은 Firebase Hosting 기준:
   //     hosting/img/icon-call.png  →  /img/icon-call.png
@@ -58,7 +59,7 @@ export function renderPublicView(props: PublicPageProps): string {
       <div class="public-link-card">
         <div class="public-link-header">
           <h2 class="public-link-title">링크로 연락하기</h2>
-          <span class="public-link-arrow" aria-hidden="true">➜</span>
+          <span class="public-link-arrow" aria-hidden="true">→</span>
         </div>
         <div class="public-link-body">
           ${escapeHtml(props.snsHref)}
@@ -67,18 +68,19 @@ export function renderPublicView(props: PublicPageProps): string {
     </a>`
   : "";
 
-  // 4) 주인이 남기는 말 영역에 들어갈 메시지
+  // 4) 주인이 남기는 말
   
   const messageText = props.message || "";
   const messageHtml = escapeHtml(messageText)
     .split("\n")
     .map((line) => `<p>${line}</p>`)
     .join("");
+
   const messageSection = `
     <section class="public-message-section">
       <div class="public-link-card">
         <div class="public-message-header">
-          <h2 class="public-link-title">주인이 남기는 말</h2>
+          <h2 class="public-link-title">주인이 보내는 말</h2>
         </div>
         <div class="public-message-body">
           ${messageHtml}
@@ -91,12 +93,12 @@ export function renderPublicView(props: PublicPageProps): string {
    <div class="public-logo">
       <img
         src="/img/nat-cactus.png"
-        alt="분실방지본부 선인장 아이콘"
+        alt="분실방지본부 NAT"
         class="public-logo-img"
       />
     </div>
 
-    <h1 class="public-title">분실방지본부</h1>
+    <h1 class="public-title">물건을 발견하셨나요?</h1>
 
     <p class="public-subtitle">
       이 QR은 <strong>‘분실방지본부’</strong>와 연결되어 있습니다.<br />
@@ -126,14 +128,14 @@ export function renderPublicView(props: PublicPageProps): string {
     <section class="public-service-section">
       <div class="public-service-card">
         <p>
-          분실방지본부(NAT)는 <br />QR코드를 통해 잃어버린 물건과 주인을 빠르게 이어주는
-          디지털 네임태그 서비스입니다.<br />
-          분실로 인한 낭비를 줄이고, 다시 돌아오는 경험을 일상으로 만듭니다.
+          분실방지본부(NAT)는 QR코드를 통해<br />
+          잃어버린 물건과 주인을 빠르게 이어주는<br />
+          디지털 네임태그 서비스입니다.
         </p>
       </div>
     </section>
 
-    <p class="register-footer-brand">NAT by 분실방지본부</p>
+    <p class="register-footer-brand">분실방지본부 NAT</p>
   `;
 }
 
