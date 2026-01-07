@@ -344,6 +344,91 @@ export function page(html: string, title = '분실방지본부 NAT 태그',
       box-shadow: none;
       transform: none;
     }
+
+    /* 등록 완료 확인 팝업 */
+    .register-page .confirm-modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .register-page .confirm-modal.is-open {
+      display: flex;
+    }
+
+    .register-page .confirm-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.35);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+
+    .register-page .confirm-modal-dialog {
+      position: relative;
+      background: #f9f8f3ff;
+      border-radius: 16px;
+      padding: 20px 18px 16px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.28);
+      max-width: 325px;
+      width: calc(100% - 48px);
+      animation: confirm-modal-in 0.18s ease-out;
+    }
+
+    .register-page .confirm-modal-message {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #000000;
+      text-align: center;
+    }
+
+    .register-page .confirm-modal-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    /* 팝업 버튼: 좌측 취소, 우측 완료 / 모바일 터치 최적화 */
+    .register-page .confirm-modal-actions .btn-secondary,
+    .register-page .confirm-modal-actions .btn-primary {
+      flex: 1;
+      height: 44px;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: 16px; 
+      border: none;
+      box-shadow: none;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 14px;
+      line-height: 1;
+    }
+
+    .register-page .confirm-modal-actions .btn-secondary {
+      background: #E0E0E0;    
+      color: #999999;         
+    }
+
+    .register-page .confirm-modal-actions .btn-primary {
+      background: #1820EF;    
+      color: #FFFFFF;         
+    }
+
+    @keyframes confirm-modal-in {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(6px);
+      }
+    }
     
     .register-page .footer-info {
       margin-top: 32px;

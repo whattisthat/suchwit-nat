@@ -49,7 +49,6 @@ export function renderPublicView(props: PublicPageProps): string {
     : `
       <p class="public-notice">
         이 태그에는 등록된 연락처 정보가 없습니다.<br />
-        불편을 끼쳐 드려 죄송합니다.
       </p>`;
 
   // 3) 링크로 연락하기 영역 (URL 전체 표시 + 클릭 시 이동)

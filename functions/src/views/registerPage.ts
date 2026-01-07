@@ -73,6 +73,25 @@ export function renderRegisterInner(idForHidden: string): string {
           </button>
         </div>
 
+        <!-- 등록 완료 확인용 팝업 -->
+        <div class="confirm-modal" id="confirm-modal">
+          <div class="confirm-modal-backdrop"></div>
+          <div class="confirm-modal-dialog">
+            <p class="confirm-modal-message">
+              등록 완료 시 정보 수정이 불가능합니다.<br />
+              완료하시겠습니까?
+            </p>
+            <div class="confirm-modal-actions">
+              <button type="button" id="confirm-cancel" class="btn-secondary">
+                취소
+              </button>
+              <button type="button" id="confirm-ok" class="btn-primary">
+                완료
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div class="footer-info">
           <p class="privacy-note">
             입력하신 정보는 <strong>태그를 스캔한 사람에게만</strong> 공개됩니다<br />
@@ -86,33 +105,80 @@ export function renderRegisterInner(idForHidden: string): string {
     </div>
   </div>
 
-  <script>
-    (function() {
-      var contact = document.getElementById('contact');
-      var sns = document.getElementById('sns');
-      var message = document.getElementById('message');
-      var charCount = document.getElementById('char-count');
-      var submitBtn = document.getElementById('submit-btn');
 
-      function updateButton() {
-        var hasContact = contact.value.trim().length > 0;
-        var hasSns = sns.value.trim().length > 0;
-        submitBtn.disabled = !(hasContact || hasSns);
-      }
+  
+<script>
+  (function() {
+    var form = document.querySelector('form'); // 현재 페이지의 등록 폼
 
-      function updateCharCount() {
-        var current = message.value.length;
-        charCount.textContent = current + '/120';
-      }
+    var contact = document.getElementById('contact');
+    var sns = document.getElementById('sns');
+    var message = document.getElementById('message');
+    var charCount = document.getElementById('char-count'); // 실제 id가 다르면 여기 수정
+    var submitBtn = document.getElementById('submit-btn');
 
+    // 팝업 요소
+    var modal = document.getElementById('confirm-modal');
+    var cancelBtn = document.getElementById('confirm-cancel');
+    var okBtn = document.getElementById('confirm-ok');
+
+    // 1) 연락처 / SNS 둘 중 하나라도 입력됐는지 체크
+    function updateButton() {
+      if (!submitBtn) return;
+      var hasContact = contact && contact.value.trim().length > 0;
+      var hasSns = sns && sns.value.trim().length > 0;
+      submitBtn.disabled = !(hasContact || hasSns);
+    }
+
+    // 2) 메시지 글자 수 카운트
+    function updateCharCount() {
+      if (!message || !charCount) return;
+      var current = message.value.length;
+      var max = message.maxLength || 120;
+      charCount.textContent = current + '/' + max;
+    }
+
+    // 입력 변화 감지
+    if (contact) {
       contact.addEventListener('input', updateButton);
+    }
+    if (sns) {
       sns.addEventListener('input', updateButton);
+    }
+    if (message) {
       message.addEventListener('input', updateCharCount);
+    }
 
-      updateButton();
-      updateCharCount();
-    })();
-  </script>
+    // ✅ 3) "등록 완료" 버튼 클릭 시: 바로 submit 금지, 팝업 먼저 띄우기
+    if (form && submitBtn && modal && cancelBtn && okBtn) {
+      submitBtn.addEventListener('click', function(event) {
+        // 아직 조건이 안 돼서 비활성화 상태면 무시
+        if (submitBtn.disabled) return;
+
+        // 원래 폼 제출 막기
+        event.preventDefault();
+
+        // 팝업 열기
+        modal.classList.add('is-open');
+      });
+
+      // 취소 버튼: 팝업만 닫고 아무 동작 안 함
+      cancelBtn.addEventListener('click', function() {
+        modal.classList.remove('is-open');
+      });
+
+      // 완료 버튼: 팝업 닫고 실제로 폼 submit → Firebase에서 status 변경
+      okBtn.addEventListener('click', function() {
+        modal.classList.remove('is-open');
+        form.submit();
+      });
+    }
+
+    // 초기 상태 세팅
+    updateButton();
+    updateCharCount();
+  })();
+</script>
   `;
 }
 
